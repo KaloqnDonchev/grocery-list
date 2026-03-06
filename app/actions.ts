@@ -5,6 +5,7 @@ import { revalidatePath } from "next/cache"
 
 export async function submitForm(formData: FormData) {
     const groceryItem = formData.get("groceryName") as string;
+    const imagePath = formData.get("imagePath") as string;
 
     await prisma.list.create({
         data: {
