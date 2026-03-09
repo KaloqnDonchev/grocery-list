@@ -21,11 +21,9 @@ export default function GroceryList({ groceryList }: { groceryList: GroceryItem[
         </Form>
         <ul>
             {groceryList.map((item) => {
-                const imagePath = `/icons/${item.name}.png`
-
                 return (
                     <li key={item.id} className="text-center mt-10 border-2 rounded-md border-zinc-400">
-                        <img src={imagePath} alt={item.name}className="w-32 mx-auto"/>
+                        <img src={item.image} />
                         {item.name}
                         <Button
                             variant="destructive"
@@ -35,7 +33,7 @@ export default function GroceryList({ groceryList }: { groceryList: GroceryItem[
                         </Button>
                     </li>
                 )
-                })}
+            })}
         </ul>
     </>
     );
