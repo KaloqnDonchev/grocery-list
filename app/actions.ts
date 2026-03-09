@@ -20,7 +20,7 @@ export async function submitForm(formData: FormData) {
     quality: "low",
   })
 
-    // save locally
+    // save to base64 in vercel blob
   const imageBase64 = image.data?.[0]?.b64_json
   const buffer = Buffer.from(imageBase64 as string, "base64")
   let blob = await put(`${groceryItem}.png`, buffer, {

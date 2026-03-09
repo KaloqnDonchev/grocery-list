@@ -3,6 +3,7 @@
 import Form from "next/form";
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import Image from 'next/image'
 import { submitForm, removeItem } from "./actions"
 import { GroceryItem } from "@/types";
 
@@ -23,7 +24,12 @@ export default function GroceryList({ groceryList }: { groceryList: GroceryItem[
             {groceryList.map((item) => {
                 return (
                     <li key={item.id} className="text-center mt-10 border-2 rounded-md border-zinc-400">
-                        <img src={item.image} />
+                        <Image 
+                            src={item.image || '/placeholder.png'} 
+                            width={200} 
+                            height={200} 
+                            alt={item.name} 
+                        />
                         {item.name}
                         <Button
                             variant="destructive"
