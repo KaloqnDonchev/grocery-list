@@ -6,19 +6,26 @@ import { Button } from "@/components/ui/button"
 import Image from 'next/image'
 import { submitForm, removeItem } from "./actions"
 import { GroceryItem } from "@/types";
+import { useActionState } from "react";
 
 export default function GroceryList({ groceryList }: { groceryList: GroceryItem[]}) {
+    const [state, action, isPending] = useActionState(submitForm, null)
+    
     return (
     <>
         <h1 className="text-6xl text-center mt-15 font-serif">Grocery Shopping List App</h1>
         <h2 className="text-xl text-center mt-5 font-serif">AI powered</h2>
-        <Form action={submitForm} className="text-center mt-15">
+        <Form action={action} className="text-center mt-15">
             <Input 
                 type="text"
                 name="groceryName"
                 placeholder="Enter grocery item"
                 className="bg-sky-50 w-2xs"/>
-            <Button type="submit" className="ml-8 w-20 bg-gray-500">Submit</Button>
+            <Button type="submit" className="ml-8 w-20 bg-gray-500">
+                {isPending ? "Adding..." : "Submit"}
+            </Button>
+            {state?.error && <p className="text-red-500 mt-2">{state.error}</p>}
+            {state?.success && <p className="text-green-500 mt-2">{state.success}</p>}
         </Form>
         <ul>
             {groceryList.map((item) => {

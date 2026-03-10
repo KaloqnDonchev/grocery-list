@@ -9,8 +9,17 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 })
 
-export async function submitForm(formData: FormData) {
+export async function submitForm(prevState: unknown, formData: FormData) {
   const groceryItem = formData.get("groceryName") as string;
+
+    // check database for already existing item
+  const existingItem = await prisma.list.findFirst({
+    where: { name: groceryItem }
+  })
+
+  if (existingItem) {
+    return { error: "Item already exists" }
+  }
 
     // generate image
   const image = await client.images.generate({
@@ -37,6 +46,7 @@ export async function submitForm(formData: FormData) {
   })
 
   revalidatePath("/");
+  return { success: "Item added!" }
 }
 
 export async function getItems() {
