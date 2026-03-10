@@ -9,6 +9,12 @@ datasource db {
 
 model List {
   id    Int    @id @default(autoincrement())
-  name  String
-  image String?
+  name  String 
+  image String
+}
+
+model GeneratedImage {
+  id    Int    @id @default(autoincrement())
+  name  String @unique
+  url   String
 }
