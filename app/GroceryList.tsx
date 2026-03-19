@@ -1,12 +1,13 @@
 'use client'
 
 import Form from "next/form";
+import Image from 'next/image'
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import Image from 'next/image'
 import { submitForm, removeItem } from "./actions"
 import { GroceryItem } from "@/types";
 import { useActionState } from "react";
+import { Item, ItemTitle } from "@/components/ui/item";
 
 export default function GroceryList({ groceryList }: { groceryList: GroceryItem[]}) {
     const [state, action, isPending] = useActionState(submitForm, null)
@@ -22,29 +23,35 @@ export default function GroceryList({ groceryList }: { groceryList: GroceryItem[
                 placeholder="Enter grocery item"
                 className="bg-sky-50 w-2xs"/>
             <Button type="submit" className="ml-8 w-20 bg-gray-500">
-                {isPending ? "Adding..." : "Submit"}
+                {isPending ? "Adding..." : "Add"}
             </Button>
             {state?.error && <p className="text-red-500 mt-2">{state.error}</p>}
             {state?.success && <p className="text-green-500 mt-2">{state.success}</p>}
         </Form>
-        <ul>
+        <ul className="flex flex-col items-center w-full mt-10 px-4">
             {groceryList.map((item) => {
                 return (
-                    <li key={item.id} className="text-center mt-10 border-2 rounded-md border-zinc-400">
+                    <Item 
+                        key={item.id} 
+                        className="flex items-center gap-4 mt-4 p-3 border-2 rounded-md border-zinc-400 w-full max-w-2xl"
+                    >
                         <Image 
                             src={item.image || '/placeholder.png'} 
-                            width={200} 
-                            height={200} 
-                            alt={item.name} 
+                            width={80} 
+                            height={80} 
+                            alt={item.name}
+                            className="rounded-md object-cover shrink-0"
                         />
-                        {item.name}
+                        <ItemTitle className="flex-1">
+                            {item.name}
+                        </ItemTitle>
                         <Button
                             variant="destructive"
-                            className="ml-3 bg-red-500 hover:bg-red-600"
+                            className="ml-auto bg-red-500 hover:bg-red-600"
                             onClick={() => removeItem(item.id)}>
                             Remove
                         </Button>
-                    </li>
+                    </Item>
                 )
             })}
         </ul>
