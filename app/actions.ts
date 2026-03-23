@@ -12,7 +12,11 @@ const client = new OpenAI({
 
 export async function submitForm(prevState: unknown, formData: FormData) {
   const groceryItem = formData.get("groceryName") as string;
-  const sessionId = await getSessionId()
+  const sessionId = await getSessionId();
+
+  if(!groceryItem) {
+    return { error: 'Please add a real item'}
+  }
 
     // check database for already existing item
   const existingItem = await prisma.list.findFirst({
