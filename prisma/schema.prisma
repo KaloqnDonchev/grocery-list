@@ -11,6 +11,7 @@ model List {
   id    Int    @id @default(autoincrement())
   name  String 
   image String
+  sessionId String
 }
 
 model GeneratedImage {

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma"
 import { revalidatePath } from "next/cache"
 import OpenAI from "openai"
 import { put } from "@vercel/blob"
+import { getSessionId } from "@/lib/session"
 
 const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -11,10 +12,15 @@ const client = new OpenAI({
 
 export async function submitForm(prevState: unknown, formData: FormData) {
   const groceryItem = formData.get("groceryName") as string;
+  const sessionId = await getSessionId();
+
+  if(!groceryItem) {
+    return { error: 'Please add a real item'}
+  }
 
     // check database for already existing item
   const existingItem = await prisma.list.findFirst({
-    where: { name: groceryItem }
+    where: { name: groceryItem, sessionId }
   })
 
   if (existingItem) {
@@ -53,7 +59,8 @@ export async function submitForm(prevState: unknown, formData: FormData) {
   await prisma.list.create({
     data: {
       name: groceryItem,
-      image: imageUrl
+      image: imageUrl,
+      sessionId
     }
   })
 
@@ -62,13 +69,16 @@ export async function submitForm(prevState: unknown, formData: FormData) {
 }
 
 export async function getItems() {
-  return await prisma.list.findMany();
+  const sessionId = await getSessionId()
+  return await prisma.list.findMany({ where: { sessionId } })
 }
 
 export async function removeItem(itemId: number) {
+  const sessionId = await getSessionId()
     await prisma.list.delete({
       where: {
-        id: itemId
+        id: itemId,
+        sessionId
       }
     })
 
