@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Grocery List
+
+**Live app:** https://grocery-list-kaloyan.vercel.app/
+
+A personal grocery list app that automatically generates an AI image for each item you add.
+
+## Features
+
+- Add grocery items to your personal list
+- Each item gets a minimalist AI-generated image (powered by OpenAI)
+- Images are cached globally — if someone has added the same item before, the image loads instantly
+- Items are scoped to your session, so each visitor has their own private list
+- Remove items when you no longer need them
+- Dark mode toggle
+- Adding a new item takes 15–20 seconds while the image is being generated
+
+## Tech Stack
+
+- **Next.js** (App Router) with React Server Actions
+- **PostgreSQL** via Prisma
+- **OpenAI** image generation (`gpt-image-1-mini`)
+- **Vercel Blob** for image storage
+- **shadcn/ui** + **Tailwind CSS v4** for styling
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Node.js 18+
+- A PostgreSQL database
+- An OpenAI API key
+- A Vercel Blob store (or swap it out for another storage provider)
+
+### Environment Variables
+
+Create a `.env` file in the root with the following:
+
+```env
+DATABASE_URL=your_postgresql_connection_string
+OPENAI_API_KEY=your_openai_api_key
+BLOB_READ_WRITE_TOKEN=your_vercel_blob_token
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### Install & Run
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npx prisma generate
+npx prisma db push
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Open [http://localhost:3000](http://localhost:3000) to use the app.
