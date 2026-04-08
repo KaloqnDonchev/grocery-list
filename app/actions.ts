@@ -10,12 +10,21 @@ const client = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 })
 
+const MAX_DAILY_ITEMS = 20
+
 export async function submitForm(prevState: unknown, formData: FormData) {
   const groceryItem = formData.get("groceryName") as string;
   const sessionId = await getSessionId();
 
   if(!groceryItem) {
     return { error: 'Please add a real item'}
+  }
+
+  const startOfDay = new Date()
+  startOfDay.setHours(0, 0, 0, 0)
+  const dailyCount = await prisma.list.count({ where: { sessionId, createdAt: { gte: startOfDay } } })
+  if (dailyCount >= MAX_DAILY_ITEMS) {
+    return { error: `Daily limit reached (${MAX_DAILY_ITEMS} items/day). Come back tomorrow!` }
   }
 
     // check database for already existing item
@@ -71,6 +80,13 @@ export async function submitForm(prevState: unknown, formData: FormData) {
 export async function getItems() {
   const sessionId = await getSessionId()
   return await prisma.list.findMany({ where: { sessionId } })
+}
+
+export async function getDailyCount() {
+  const sessionId = await getSessionId()
+  const startOfDay = new Date()
+  startOfDay.setHours(0, 0, 0, 0)
+  return prisma.list.count({ where: { sessionId, createdAt: { gte: startOfDay } } })
 }
 
 export async function removeItem(itemId: number) {
