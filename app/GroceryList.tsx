@@ -11,9 +11,12 @@ import { useActionState } from "react"
 import { Item, ItemTitle, ItemMedia, ItemContent, ItemActions, ItemGroup } from "@/components/ui/item"
 import { ShoppingCart, Sun, Moon } from "lucide-react"
 
-export default function GroceryList({ groceryList }: { groceryList: GroceryItem[] }) {
+const MAX_DAILY_ITEMS = 20
+
+export default function GroceryList({ groceryList, dailyCount }: { groceryList: GroceryItem[], dailyCount: number }) {
     const [state, action, isPending] = useActionState(submitForm, null)
     const [dark, setDark] = useState(false)
+    const atLimit = dailyCount >= MAX_DAILY_ITEMS
 
     useEffect(() => {
         const stored = localStorage.getItem('theme')
@@ -54,20 +57,27 @@ export default function GroceryList({ groceryList }: { groceryList: GroceryItem[
                         name="groceryName"
                         placeholder="Add a grocery item..."
                         className="flex-1"
+                        disabled={isPending || atLimit}
                     />
-                    <Button type="submit" disabled={isPending}>
+                    <Button type="submit" disabled={isPending || atLimit}>
                         {isPending ? "Adding..." : "Add"}
                     </Button>
                 </Form>
-                {isPending ? (
-                    <p className="text-muted-foreground mt-2 text-sm animate-pulse">
-                        Generating AI image, this may take 15-20 seconds...
-                    </p>
-                ) : (
-                    <p className="text-muted-foreground mt-2 text-sm">
-                        Each item gets an AI-generated image — may take 15-20 seconds.
-                    </p>
-                )}
+                <div className="mt-2">
+                    {isPending ? (
+                        <p className="text-muted-foreground text-sm animate-pulse">
+                            Generating AI image, this may take 15-20 seconds...
+                        </p>
+                    ) : atLimit ? (
+                        <p className="text-amber-500 text-sm">
+                            Daily limit reached. Come back tomorrow!
+                        </p>
+                    ) : (
+                        <p className="text-muted-foreground text-sm">
+                            Each item gets an AI-generated image — may take 15-20 seconds.
+                        </p>
+                    )}
+                </div>
                 {!isPending && state?.error && <p className="text-red-500 mt-1 text-sm">{state.error}</p>}
                 {!isPending && state?.success && <p className="text-green-500 mt-1 text-sm">{state.success}</p>}
 
