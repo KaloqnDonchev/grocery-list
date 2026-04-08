@@ -59,8 +59,17 @@ export default function GroceryList({ groceryList }: { groceryList: GroceryItem[
                         {isPending ? "Adding..." : "Add"}
                     </Button>
                 </Form>
-                {state?.error && <p className="text-red-500 mt-2 text-sm">{state.error}</p>}
-                {state?.success && <p className="text-green-500 mt-2 text-sm">{state.success}</p>}
+                {isPending ? (
+                    <p className="text-muted-foreground mt-2 text-sm animate-pulse">
+                        Generating AI image, this may take 15-20 seconds...
+                    </p>
+                ) : (
+                    <p className="text-muted-foreground mt-2 text-sm">
+                        Each item gets an AI-generated image — may take 15-20 seconds.
+                    </p>
+                )}
+                {!isPending && state?.error && <p className="text-red-500 mt-1 text-sm">{state.error}</p>}
+                {!isPending && state?.success && <p className="text-green-500 mt-1 text-sm">{state.success}</p>}
 
                 {groceryList.length === 0 ? (
                     <div className="mt-16 text-center text-muted-foreground">
